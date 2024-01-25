@@ -8,8 +8,10 @@ export class GamesService {
     constructor(private readonly databaseService: DatabaseService) {}
 
     async create(createGameDto: Prisma.GamesCreateInput) {
-        return this.databaseService.games.create({
-            data: createGameDto
+        return this.databaseService.games.upsert({
+            create: createGameDto,
+            update: createGameDto,
+            where: { bggId: createGameDto.bggId }
         })
     }
 
