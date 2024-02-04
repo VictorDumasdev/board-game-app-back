@@ -1,88 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { Prisma } from '@prisma/client';
+import { DatabaseService } from 'src/database/database.service';
+import { encodePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
-    private users = [
-        {
-        id: 1,
-        name: 'Leanne Graham',
-        email: 'Sincere@april.biz',
-        role: 'INTERN',
-        },
-        {
-        id: 2,
-        name: 'Ervin Howell',
-        email: 'Shanna@melissa.tv',
-        role: 'INTERN',
-        },
-        {
-        id: 3,
-        name: 'Clementine Bauch',
-        email: 'Nathan@yesenia.net',
-        role: 'ENGINEER',
-        },
-        {
-        id: 4,
-        name: 'Patricia Lebsack',
-        email: 'Julianne.OConner@kory.org',
-        role: 'ENGINEER',
-        },
-        {
-        id: 5,
-        name: 'Chelsey Dietrich',
-        email: 'Lucio_Hettinger@annie.ca',
-        role: 'ADMIN',
-        },
-    ];
+  constructor(private readonly databaseService: DatabaseService, private jwtService: JwtService) {}
 
-    findAll(role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-        if (role) {
-        const rolesArray = this.users.filter((user) => user.role === role);
-
-        if(rolesArray.length === 0) throw new NotFoundException('User role not found');
-        return rolesArray; 
+  async create(createUserDto: Prisma.UsersCreateInput) {
+    const password = encodePassword(createUserDto.password);
+    const response = await this.databaseService.users.create({
+        data: { 
+          ...createUserDto,
+          password,
+          ownedGames: [],
+          favoriteGames: [],
+          everPlayedGames: []
         }
-        return this.users;
+    });
+
+    const payload = { sub: response.id, username: response.email };
+    return { data: this.exclude(response, 'password'), access_token: await this.jwtService.signAsync(payload) }
+  }
+
+  async findOne(email: string) {
+      return this.databaseService.users.findFirst({
+          where: { email }
+      })
+  }
+
+  async update(id: number, updateUserDto: Prisma.UsersUpdateInput) {
+      return this.databaseService.users.update({
+          where: { id }, 
+          data: this.exclude(updateUserDto, 'id')
+      })
+  }
+
+  async remove(id: number) {
+      return this.databaseService.users.delete({
+          where: { id }
+      })
+  }
+
+  exclude(user, ...keys) {
+    for (let key of keys) {
+      delete user[key]
     }
-
-    findOne(id: number) {
-        const user = this.users.find((user) => user.id === id);
-
-        if(!user) throw new NotFoundException('User not found');
-
-        return user;
-    }
-
-    create(createUserDto: CreateUserDto) {
-        const usersByHighestId = [...this.users].sort((a, b) => b.id - a.id);
-        const newUser = {
-        id: usersByHighestId[0].id + 1,
-        ...createUserDto,
-        };
-        this.users.push(newUser);
-
-        return newUser;
-    }
-
-    update(id: number, updateUserDto: UpdateUserDto) {
-        this.users = this.users.map(user => {
-        if(user.id === id) {
-            return { ...user, ...updateUserDto}
-        }
-        return user;
-        })
-
-        return this.findOne(id)
-    }
-
-    delete(id: number) {
-        const removedUser = this.findOne(id);
-        
-        this.users = this.users.filter(user => user.id === id);
-
-        return removedUser;
-    }
+    return user
+  }
+  
 }

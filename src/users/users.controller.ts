@@ -1,35 +1,31 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, ParseIntPipe, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Prisma } from '@prisma/client';
+import { AuthGuard } from '../authentication/authentication.guard';
 
 @Controller('users')
 export class UsersController {
+  constructor(private readonly usersService: UsersService,) {}
 
-    constructor(private readonly usersService: UsersService) {}
+  @Post()
+  create(@Body() createUserDto: Prisma.UsersCreateInput) {
+    return this.usersService.create(createUserDto);
+  }
+  
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  findOne(@Param('id') email: string) {
+    return this.usersService.findOne(email);
+  }
+  
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: Prisma.UsersUpdateInput) {
+    return this.usersService.update(+id, updateUserDto);
+  }
 
-    @Get()// can get all or be used with query param role eg: xxx?role='ADMIN'
-    findAll(@Query('role') role?: 'INTERN' | 'ENGINEER' | 'ADMIN') {
-        return this.usersService.findAll(role);
-    }
-
-    @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id: number) {
-        return this.usersService.findOne(id);
-    }
-
-    @Post()
-    create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
-        return this.usersService.create(createUserDto);
-    }
-
-    @Patch(':id')
-    update(@Param('id', ParseIntPipe) id: number, @Body(ValidationPipe) updateUserDto: UpdateUserDto) {
-        return this.usersService.update(id, updateUserDto);
-    }
-
-    @Delete(':id')
-    delete(@Param('id', ParseIntPipe) id: number) {
-        return this.usersService.delete(id);
-    }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
+  }
 }
