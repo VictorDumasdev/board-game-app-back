@@ -47,3 +47,18 @@ model Users {
   favoriteGames   Int[]
   everPlayedGames Int[]
 }
+
+model Invitations {
+  id                  Int     @id @default(autoincrement())
+  senderEmail         String
+  senderNickname      String
+  receiverEmail       String
+  receiverNickname    String
+  creationDate        DateTime
+} 
+
+model Friends {
+  id                  Int     @id @default(autoincrement())
+  senderUserId        Int
+  receiverUserId      Int
+} 

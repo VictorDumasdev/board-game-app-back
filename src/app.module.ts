@@ -8,6 +8,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { GamesModule } from './games/games.module';
 import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { InvitationsModule } from './invitations/invitations.module';
 
 @Module({
     imports: [
@@ -24,7 +25,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
             limit: 100
         }]),
         UsersModule,
-        AuthenticationModule
+        AuthenticationModule,
+        InvitationsModule
     ],
     controllers: [AppController],
     providers: [AppService, {
