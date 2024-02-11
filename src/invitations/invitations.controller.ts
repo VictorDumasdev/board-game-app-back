@@ -18,7 +18,8 @@ export class InvitationsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.invitationsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const removedInvitation = await this.invitationsService.remove(+id);
+    return removedInvitation.id;
   }
 }

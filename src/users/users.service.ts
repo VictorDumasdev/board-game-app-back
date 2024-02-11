@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
@@ -9,25 +9,35 @@ export class UsersService {
   constructor(private readonly databaseService: DatabaseService, private jwtService: JwtService) {}
 
   async create(createUserDto: Prisma.UsersCreateInput) {
-    const password = encodePassword(createUserDto.password);
-    const response = await this.databaseService.users.create({
-        data: { 
-          ...createUserDto,
-          password,
-          ownedGames: [],
-          favoriteGames: [],
-          everPlayedGames: []
-        }
-    });
-
-    const payload = { sub: response.id, username: response.email };
-    return { data: this.exclude(response, 'password'), access_token: await this.jwtService.signAsync(payload) }
+    try {
+      const password = encodePassword(createUserDto.password);
+      const response = await this.databaseService.users.create({
+          data: { 
+            ...createUserDto,
+            password,
+            ownedGames: [],
+            favoriteGames: [],
+            everPlayedGames: []
+          }
+      });
+  
+      const payload = { sub: response.id, username: response.email };
+      return { data: this.exclude(response, 'password'), access_token: await this.jwtService.signAsync(payload) }
+    } catch(error) {
+      throw new HttpException('User email already used', HttpStatus.CONFLICT)
+    }
   }
 
   async findOne(email: string) {
       return this.databaseService.users.findFirst({
           where: { email }
       })
+  }
+
+  async findMany(ids: number[]) {
+    return this.databaseService.users.findMany({
+        where: { id: { in: ids } }
+    })
   }
 
   async update(id: number, updateUserDto: Prisma.UsersUpdateInput) {

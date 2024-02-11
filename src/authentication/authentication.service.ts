@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { comparePasswords } from 'src/utils/bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -20,6 +20,8 @@ export class AuthenticationService {
       } else {
         throw new UnauthorizedException();
       }
+    } else {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
   }
 

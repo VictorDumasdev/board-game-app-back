@@ -38,6 +38,6 @@ export class InvitationsService {
       const invitationDelete =  await this.databaseService.invitations.delete({
           where: { id }
       })
-      return invitationDelete.id
+      return invitationDelete;
   }
 }
