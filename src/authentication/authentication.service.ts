@@ -3,6 +3,7 @@ import { UsersService } from 'src/users/users.service';
 import { comparePasswords } from 'src/utils/bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Users } from '@prisma/client';
+import { exclude } from 'src/utils/utils';
 
 @Injectable()
 export class AuthenticationService {
@@ -16,19 +17,12 @@ export class AuthenticationService {
       if(isMatch) {
         const payload = { sub: user.id, username: user.email };
 
-        return { access_token: await this.jwtService.signAsync(payload), user: this.exclude(user, 'password')};
+        return { access_token: await this.jwtService.signAsync(payload), user: exclude(user, 'password')};
       } else {
         throw new UnauthorizedException();
       }
     } else {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
-  }
-
-  exclude(user, ...keys) {
-    for (let key of keys) {
-      delete user[key]
-    }
-    return user
   }
 }

@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { encodePassword } from 'src/utils/bcrypt';
+import { exclude } from 'src/utils/utils';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +23,7 @@ export class UsersService {
       });
   
       const payload = { sub: response.id, username: response.email };
-      return { data: this.exclude(response, 'password'), access_token: await this.jwtService.signAsync(payload) }
+      return { data: exclude(response, 'password'), access_token: await this.jwtService.signAsync(payload) }
     } catch(error) {
       throw new HttpException('User email already used', HttpStatus.CONFLICT)
     }
@@ -34,6 +35,12 @@ export class UsersService {
       })
   }
 
+  async findOneById(id: number) {
+    return this.databaseService.users.findFirst({
+        where: { id }
+    })
+}
+
   async findMany(ids: number[]) {
     return this.databaseService.users.findMany({
         where: { id: { in: ids } }
@@ -43,7 +50,7 @@ export class UsersService {
   async update(id: number, updateUserDto: Prisma.UsersUpdateInput) {
       return this.databaseService.users.update({
           where: { id }, 
-          data: this.exclude(updateUserDto, 'id')
+          data: exclude(updateUserDto, 'id')
       })
   }
 
@@ -52,12 +59,4 @@ export class UsersService {
           where: { id }
       })
   }
-
-  exclude(user, ...keys) {
-    for (let key of keys) {
-      delete user[key]
-    }
-    return user
-  }
-  
 }

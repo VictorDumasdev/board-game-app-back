@@ -46,6 +46,7 @@ model Users {
   ownedGames      Int[]
   favoriteGames   Int[]
   everPlayedGames Int[]
+  groups          Groups[]
 }
 
 model Invitations {
@@ -62,3 +63,12 @@ model Friends {
   senderUserId        Int
   receiverUserId      Int
 } 
+
+model Groups {
+  id                  Int     @id @default(autoincrement())
+  name                String
+  description         String
+  adminUserEmail      String
+  canAnyoneInvite     Boolean
+  users               Users[]
+}

@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { FriendsModule } from './friends/friends.module';
+import { GroupsModule } from './groups/groups.module';
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { FriendsModule } from './friends/friends.module';
         UsersModule,
         AuthenticationModule,
         InvitationsModule,
-        FriendsModule
+        FriendsModule,
+        GroupsModule
     ],
     controllers: [AppController],
     providers: [AppService, {
