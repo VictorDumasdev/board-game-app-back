@@ -34,7 +34,8 @@ export class GroupsService {
         }
       },
       include: {
-        users: true
+        users: true,
+        groupInvitations: true
       }
     });
 
@@ -47,7 +48,8 @@ export class GroupsService {
               id
           },
           include: {
-            users: true
+            users: true,
+            groupInvitations: true
           }
       })
       return {
@@ -72,5 +74,19 @@ export class GroupsService {
             id
         }
     })
+  }
+
+  async addUserToGroup(id: number, userToAdd: Prisma.UsersCreateInput) {
+    console.log(id, userToAdd.email)
+    return this.databaseService.groups.update({
+      where: { id },
+      data: {
+        users: {
+          connect: {
+            email: userToAdd.email
+          } 
+        }
+      }
+    });
   }
 }

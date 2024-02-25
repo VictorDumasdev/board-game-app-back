@@ -11,6 +11,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { FriendsModule } from './friends/friends.module';
 import { GroupsModule } from './groups/groups.module';
+import { GroupsInvitationsModule } from './groups-invitations/groups-invitations.module';
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { GroupsModule } from './groups/groups.module';
         AuthenticationModule,
         InvitationsModule,
         FriendsModule,
-        GroupsModule
+        GroupsModule,
+        GroupsInvitationsModule
     ],
     controllers: [AppController],
     providers: [AppService, {
