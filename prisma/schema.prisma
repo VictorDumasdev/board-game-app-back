@@ -47,6 +47,7 @@ model Users {
   favoriteGames   Int[]
   everPlayedGames Int[]
   groups          Groups[]
+  events          GameEvent[]
 }
 
 model Invitations {
@@ -72,6 +73,7 @@ model Groups {
   canAnyoneInvite   Boolean
   users             Users[]
   groupInvitations  GroupsInvitation[]
+  groupEvents       GameEvent[]
 }
 
 model GroupsInvitation {
@@ -83,4 +85,16 @@ model GroupsInvitation {
   creationDate        DateTime
   groupId             Int
   group               Groups  @relation(fields: [groupId], references: [id])
+}
+
+model GameEvent {
+  id                  Int     @id @default(autoincrement())
+  title               String
+  description         String
+  participants        Users[]
+  invitations         Int[]
+  date                DateTime
+  suggestedGamesId    Int[]      
+  group               Groups   @relation(fields: [groupId], references: [id])
+  groupId             Int
 }

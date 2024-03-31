@@ -12,6 +12,8 @@ import { InvitationsModule } from './invitations/invitations.module';
 import { FriendsModule } from './friends/friends.module';
 import { GroupsModule } from './groups/groups.module';
 import { GroupsInvitationsModule } from './groups-invitations/groups-invitations.module';
+import { GameEventModule } from './game-event/game-event.module';
+
 
 @Module({
     imports: [
@@ -32,7 +34,8 @@ import { GroupsInvitationsModule } from './groups-invitations/groups-invitations
         InvitationsModule,
         FriendsModule,
         GroupsModule,
-        GroupsInvitationsModule
+        GroupsInvitationsModule,
+        GameEventModule
     ],
     controllers: [AppController],
     providers: [AppService, {
