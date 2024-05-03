@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { GroupsService } from './groups.service';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { GroupsService } from './groups.service';
 
 @Controller('groups')
 export class GroupsController {

@@ -51,12 +51,19 @@ model Users {
 }
 
 model Invitations {
-  id               Int      @id @default(autoincrement())
-  senderEmail      String
-  senderNickname   String
-  receiverEmail    String
-  receiverNickname String
-  creationDate     DateTime
+  id                Int      @id @default(autoincrement())
+  senderEmail       String
+  senderNickname    String
+  receiverEmail     String
+  receiverNickname  String
+  creationDate      DateTime
+  type              InvitationsType
+}
+
+enum InvitationsType {
+  FRIEND
+  GROUP
+  EVENT
 }
 
 model Friends {
@@ -72,19 +79,8 @@ model Groups {
   adminUserEmail    String
   canAnyoneInvite   Boolean
   users             Users[]
-  groupInvitations  GroupsInvitation[]
+  invitationsId     Int[]
   groupEvents       GameEvent[]
-}
-
-model GroupsInvitation {
-  id                  Int     @id @default(autoincrement())
-  senderEmail         String
-  senderNickname      String
-  receiverEmail       String
-  receiverNickname    String
-  creationDate        DateTime
-  groupId             Int
-  group               Groups  @relation(fields: [groupId], references: [id])
 }
 
 model GameEvent {
@@ -92,7 +88,7 @@ model GameEvent {
   title               String
   description         String
   participants        Users[]
-  invitations         Int[]
+  invitationsId       Int[]
   date                DateTime
   suggestedGamesId    Int[]      
   group               Groups   @relation(fields: [groupId], references: [id])

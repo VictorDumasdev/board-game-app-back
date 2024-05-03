@@ -11,7 +11,6 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { FriendsModule } from './friends/friends.module';
 import { GroupsModule } from './groups/groups.module';
-import { GroupsInvitationsModule } from './groups-invitations/groups-invitations.module';
 import { GameEventModule } from './game-event/game-event.module';
 
 
@@ -34,7 +33,6 @@ import { GameEventModule } from './game-event/game-event.module';
         InvitationsModule,
         FriendsModule,
         GroupsModule,
-        GroupsInvitationsModule,
         GameEventModule
     ],
     controllers: [AppController],

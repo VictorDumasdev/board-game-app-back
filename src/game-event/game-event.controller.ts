@@ -1,14 +1,15 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { GameEventService } from './game-event.service';
+import { CreateGameEventPayload } from './game-event.types';
 
 
-@Controller('game-event')
+@Controller('event')
 export class GameEventController {
   constructor(private readonly gameEventService: GameEventService) {}
 
   @Post()
-  create(@Body() createGameEventDto: Prisma.GameEventCreateInput) {//TODO: use CreateGameEventPayload
+  create(@Body() createGameEventDto: CreateGameEventPayload) {
     return this.gameEventService.create(createGameEventDto);
   }
 

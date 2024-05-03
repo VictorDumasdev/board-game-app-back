@@ -1,24 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { InvitationsService } from 'src/invitations/invitations.service';
 import { UsersService } from 'src/users/users.service';
-import { CreateFriendPayload } from './friends.type';
 
 
 @Injectable()
 export class FriendsService {
   constructor(
     private readonly databaseService: DatabaseService,
-    private readonly userService: UsersService,
-    private readonly invitationService: InvitationsService
+    private readonly userService: UsersService
   ) {}
 
-  async create(createFriendPayload: CreateFriendPayload) {
-    const deletedInvitation = await this.invitationService.remove(createFriendPayload.invitationId);
-    const friendUser = await this.userService.findOne(deletedInvitation.senderEmail)
+  async acceptFriendInvitation(currentUserId: number, senderEmail: string) {
+    const friendUser = await this.userService.findOne(senderEmail)
     const friend = await this.databaseService.friends.create({
         data: {
-          receiverUserId: createFriendPayload.currentUserId,
+          receiverUserId: currentUserId,
           senderUserId: friendUser.id
         }
     });

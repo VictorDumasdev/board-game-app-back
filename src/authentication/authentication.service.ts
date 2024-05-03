@@ -7,10 +7,10 @@ import { exclude } from 'src/utils/utils';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private usersService: UsersService, private jwtService: JwtService) {}
+  constructor(private userService: UsersService, private jwtService: JwtService) {}
 
   async signIn(email: string, pass: string): Promise<{ access_token: string, user: Users }> {
-    const user = await this.usersService.findOne(email);
+    const user = await this.userService.findOneWithPass(email);
     
     if(user) {
       const isMatch = comparePasswords(pass, user.password);

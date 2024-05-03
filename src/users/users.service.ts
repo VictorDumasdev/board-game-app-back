@@ -30,9 +30,17 @@ export class UsersService {
   }
 
   async findOne(email: string) {
-      return this.databaseService.users.findFirst({
-          where: { email }
-      })
+    const user = await this.databaseService.users.findFirst({
+        where: { email }
+    });
+
+    return exclude(user, 'password')
+  }
+
+  async findOneWithPass(email: string) {
+    return this.databaseService.users.findFirst({
+        where: { email }
+    });
   }
 
   async findOneById(id: number) {
